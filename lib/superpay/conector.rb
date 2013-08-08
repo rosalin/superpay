@@ -1,11 +1,11 @@
 module Superpay
   class Conector
 
-    URL_PRODUCAO     = "https://superpay2.superpay.com.br/superpay"
-    URL_TESTE        = "http://homologacao2.superpay.com.br/checkout"
+    URL_PRODUCAO     = "https://superpay2.superpay.com.br"
+    URL_TESTE        = "http://homologacao2.superpay.com.br"
 
-    TRANSACAO_PATH   = "/servicosPagamentoCompletoWS.Services?wsdl"
-    RECORRENCIA_PATH = "/servicosRecorrenciaWS.Services?wsdl"
+    TRANSACAO_PATH   = "/checkout/servicosPagamentoCompletoWS.Services?wsdl"
+    RECORRENCIA_PATH = "/superpay/servicosRecorrenciaWS.Services?wsdl"
 
     attr_accessor :savon_client, :savon_client_recorrencia
 
