@@ -131,7 +131,7 @@ module Superpay
         transacao[:itens_do_pedido] = [transacao[:itens_do_pedido]]
       end
 
-      if transacao[:itens_do_pedido].is_a?(List)
+      if transacao[:itens_do_pedido].is_a?(Array)
         transacao[:itens_do_pedido].each do |item|
           item[:valor_unitario_produto] = Helper.to_superpay_number(item[:valor_unitario_produto]) unless item[:valor_unitario_produto].blank?
         end
