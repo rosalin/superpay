@@ -9,19 +9,12 @@ module Superpay
       @__instance__ ||= new
     end
 
-    def url
-      if ambiente_producao?
-        return 'https://superpay2.superpay.com.br/checkout/servicosPagamentoCompletoWS.Services?wsdl'
-      else
-        return 'http://homologacao2.superpay.com.br/checkout/servicosPagamentoCompletoWS.Services?wsdl'
-      end
+    def teste?
+      !producao?
     end
 
-    def ambiente_teste?
-      !ambiente_producao?
-    end
-
-    def ambiente_producao?
+    def producao?
+      return Rails.env.production?          if defined?(Rails)
       return (ambiente.to_sym == :producao) if !ambiente.blank?
       return true
     end

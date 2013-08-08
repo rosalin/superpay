@@ -5,14 +5,14 @@ require 'superpay'
 describe Superpay::Configuracao do
 
   before do
-    @client = Savon.client do 
+    @client = Savon.client do
       wsdl 'http://homologacao2.superpay.com.br/checkout/servicosPagamentoCompletoWS.Services?wsdl'
       convert_request_keys_to :lower_camelcase
     end
   end
-  
+
   describe "teste de requisicao" do
-    it "deveria reconhecer as operações" do 
+    it "deveria reconhecer as operações" do
       @client.operations.must_equal [:consulta_transacao_especifica, :pagamento_transacao_completa, :operacao_transacao, :visualizar_dados_retorno, :pagamento_transacao_completa_mais_cartoes_credito, :cancelar_transacao_completa, :capturar_transacao_completa, :refazer_transacao, :altera_numero_pedido, :salva_hash_pagamento, :bloquear_transacao, :consulta_bloqueio_transacao, :atualiza_campos_livres]
     end
   end
@@ -123,8 +123,6 @@ describe Superpay::Configuracao do
       data[:codigo_estabelecimento].must_equal '1369338339932'
       data[:codigo_forma_pagamento].must_equal '120'
       data[:codigo_transacao_operadora].must_equal '0'
-      # data[:data_aprovacao_operadora].must_equal '21/06/2013'
-      # data[:mensagem_venda].must_equal 'Autorizada'
       data[:numero_transacao].must_equal '104'
       data[:parcelas].must_equal '1'
       data[:status_transacao].must_equal '31'

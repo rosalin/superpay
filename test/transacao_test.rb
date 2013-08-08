@@ -20,7 +20,7 @@ describe Superpay::Transacao do
       documento_comprador: '04795729921',
       documento2_comprador: '97619077',
       sexo_comprador: 'M',
-      data_nascimento_comprador: '14/03/1988',
+      data_nascimento_comprador: Time.new(1981, 07, 11),
       telefone_comprador: '34166404',
       ddd_comprador: '16',
       ddi_comprador: '55',
@@ -103,13 +103,11 @@ describe Superpay::Transacao do
   end
 
   it "deveria pagar com sucesso" do
-    transacao = Superpay::Transacao.pagar( @venda )
+    transacao = Superpay::Transacao.pagar(@venda)
     transacao[:autorizacao].must_equal '0'
     transacao[:codigo_estabelecimento].must_equal Superpay.config.estabelecimento.to_s
     transacao[:codigo_forma_pagamento].must_equal '120'
     transacao[:codigo_transacao_operadora].must_equal '0'
-    # transacao[:data_aprovacao_operadora].must_equal '21/06/2013'
-    # transacao[:mensagem_venda].must_equal 'Autorizada'
     transacao[:numero_transacao].must_equal '104'
     transacao[:parcelas].must_equal '1'
     transacao[:status_transacao].must_equal '31'
@@ -117,6 +115,8 @@ describe Superpay::Transacao do
     transacao[:taxa_embarque].must_equal 0
     transacao[:valor].must_equal 1
     transacao[:valor_desconto].must_equal 0
+    # transacao[:data_aprovacao_operadora].must_equal '21/06/2013'
+    # transacao[:mensagem_venda].must_equal 'Autorizada'
   end
 
   it "deveria consultar com sucesso" do
@@ -125,8 +125,6 @@ describe Superpay::Transacao do
     transacao[:codigo_estabelecimento].must_equal Superpay.config.estabelecimento.to_s
     transacao[:codigo_forma_pagamento].must_equal '120'
     transacao[:codigo_transacao_operadora].must_equal '0'
-    # transacao[:data_aprovacao_operadora].must_equal '21/06/2013'
-    # transacao[:mensagem_venda].must_equal 'Autorizada'
     transacao[:numero_transacao].must_equal '104'
     transacao[:parcelas].must_equal '1'
     transacao[:status_transacao].must_equal '13'
@@ -134,15 +132,16 @@ describe Superpay::Transacao do
     transacao[:valor].must_equal 1
     transacao[:taxa_embarque].must_equal 0
     transacao[:valor_desconto].must_equal 0
+    # transacao[:data_aprovacao_operadora].must_equal '21/06/2013'
+    # transacao[:mensagem_venda].must_equal 'Autorizada'
   end
 
-  it "deveria voltar erro se consultar transacao que não existe" do
-    transacao = Superpay::Transacao.consultar(0)
-    puts transacao.to_yaml
-  end
+  # it "deveria voltar erro se consultar transacao que não existe" do
+  #   transacao = Superpay::Transacao.consultar(0)
+  #   puts transacao.to_yaml
+  # end
 
   it "deveria pagar pela primeira vez com sucesso" do
-
     transacao = {
       numero_transacao: 106,
       codigo_forma_pagamento: 121,
@@ -171,7 +170,7 @@ describe Superpay::Transacao do
         documento_comprador: '04795729921',
         documento2_comprador: '97619077',
         sexo_comprador: 'M',
-        data_nascimento_comprador: '14/03/1988',
+        data_nascimento_comprador: Time.new(1981, 07, 11),
         telefone_comprador: '34166404',
         ddd_comprador: '16',
         ddi_comprador: '55',
@@ -219,8 +218,6 @@ describe Superpay::Transacao do
     transacao[:codigo_estabelecimento].must_equal Superpay.config.estabelecimento.to_s
     transacao[:codigo_forma_pagamento].must_equal '121'
     transacao[:codigo_transacao_operadora].must_equal '0'
-    # transacao[:data_aprovacao_operadora].must_equal Date.today
-    # transacao[:mensagem_venda].must_equal 'Autorizada'
     transacao[:numero_transacao].must_equal '106'
     transacao[:parcelas].must_equal '1'
     transacao[:status_transacao].must_equal '31'
@@ -229,6 +226,7 @@ describe Superpay::Transacao do
     transacao[:valor].must_equal 107.45
     transacao[:valor_desconto].must_equal 0
 
+    # transacao[:data_aprovacao_operadora].must_equal Date.today
+    # transacao[:mensagem_venda].must_equal 'Autorizada'
   end
-
 end

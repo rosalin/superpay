@@ -6,8 +6,8 @@ require 'superpay/version'
 Gem::Specification.new do |spec|
   spec.name          = "superpay"
   spec.version       = Superpay::VERSION
-  spec.authors       = ["QW3 Software & Marketing"]
-  spec.email         = ["contato@qw3.com.br"]
+  spec.authors       = ["QW3 Software & Marketing", "Maximiliano Guzenski"]
+  spec.email         = ["contato@qw3.com.br", "max@guzenski.com.br"]
   spec.description   = %q{Gem de integração com o gateway de pagamentos Superpay}
   spec.summary       = %q{Projeto extraído da construção da plataforma de e-commerce Profit, da QW3.}
   spec.homepage      = "https://github.com/qw3/superpay"
@@ -18,9 +18,9 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'brdinheiro'
-  spec.add_dependency 'brdata'
-  spec.add_dependency 'savon', '2.2'
+  #spec.add_dependency 'brdinheiro'
+  #spec.add_dependency 'brdata'
+  spec.add_dependency 'savon', '~> 2.3'
 
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
