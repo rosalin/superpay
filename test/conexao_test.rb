@@ -12,7 +12,7 @@ describe Superpay::Configuracao do
   end
 
   describe "teste de requisicao" do
-    it "deveria reconhecer as operações" do
+    it "deveria reconhecer as operações de transacao completa" do
       @client.operations.must_equal [:consulta_transacao_especifica, :pagamento_transacao_completa, :operacao_transacao, :visualizar_dados_retorno, :pagamento_transacao_completa_mais_cartoes_credito, :cancelar_transacao_completa, :capturar_transacao_completa, :refazer_transacao, :altera_numero_pedido, :salva_hash_pagamento, :bloquear_transacao, :consulta_bloqueio_transacao, :atualiza_campos_livres]
     end
   end

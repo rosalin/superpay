@@ -14,9 +14,13 @@ module Superpay
     end
 
     def reload
-      parametros                = {convert_request_keys_to: :lower_camelcase}
+      parametros = {
+        convert_request_keys_to: :lower_camelcase,
+        log_level: ::Superpay.config.producao? ? :info : :debug,
+        pretty_print_xml: ::Superpay.config.producao? ? false : true
+      }
 
-      @savon_client             = Savon.client(parametros.merge({wsdl: url(TRANSACAO_PATH)}))
+      @savon_client             = Savon.client(parametros.merge({wsdl: url(TRANSACAO_PATH), }))
       @savon_client_recorrencia = Savon.client(parametros.merge({wsdl: url(RECORRENCIA_PATH)}))
     end
 
