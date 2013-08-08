@@ -31,13 +31,13 @@ module Superpay
     # Caso deseje saber qual o real status da transação, faça uma consulta.
     def self.pagar(dados)
       # Valida os dados passados
-      raise 'Campo obrigatório: numero_transacao' if dados[:numero_transacao].blank?
-      raise 'Campo obrigatório: codigo_forma_pagamento' if dados[:codigo_forma_pagamento].blank?
-      raise 'Campo obrigatório: valor' if dados[:valor].blank?
-      raise 'Campo obrigatório: nome_titular_cartao_credito' if dados[:nome_titular_cartao_credito].blank?
-      raise 'Campo obrigatório: numero_cartao_credito' if dados[:numero_cartao_credito].blank?
-      raise 'Campo obrigatório: codigo_seguranca' if dados[:codigo_seguranca].blank?
-      raise 'Campo obrigatório: data_validade_cartao' if dados[:data_validade_cartao].blank?
+      raise 'Campo obrigatório: numero_transacao'             if dados[:numero_transacao].blank?
+      raise 'Campo obrigatório: codigo_forma_pagamento'       if dados[:codigo_forma_pagamento].blank?
+      raise 'Campo obrigatório: valor'                        if dados[:valor].blank?
+      raise 'Campo obrigatório: nome_titular_cartao_credito'  if dados[:nome_titular_cartao_credito].blank?
+      raise 'Campo obrigatório: numero_cartao_credito'        if dados[:numero_cartao_credito].blank?
+      raise 'Campo obrigatório: codigo_seguranca'             if dados[:codigo_seguranca].blank?
+      raise 'Campo obrigatório: data_validade_cartao'         if dados[:data_validade_cartao].blank?
 
       #nao acreito que sejam obrigatorios
       #raise 'Campo obrigatório: dados_usuario_transacao' if dados[:dados_usuario_transacao].blank?
@@ -122,16 +122,19 @@ module Superpay
     # Transforma valores e datas
     def self.tratar_envio(transacao)
       # valores da transação
-      transacao[:valor] = Helper.to_superpay_number(transacao[:valor]) unless transacao[:valor].blank?
-      transacao[:valor_desconto] = Helper.to_superpay_number(transacao[:valor_desconto]) unless transacao[:valor_desconto].blank?
-      transacao[:taxa_embarque] = Helper.to_superpay_number(transacao[:taxa_embarque]) unless transacao[:taxa_embarque].blank?
+      transacao[:valor]           = Helper.to_superpay_number(transacao[:valor]) unless transacao[:valor].blank?
+      transacao[:valor_desconto]  = Helper.to_superpay_number(transacao[:valor_desconto]) unless transacao[:valor_desconto].blank?
+      transacao[:taxa_embarque]   = Helper.to_superpay_number(transacao[:taxa_embarque]) unless transacao[:taxa_embarque].blank?
 
       # valor dos itens do pedido
       if transacao[:itens_do_pedido].is_a?(Hash)
         transacao[:itens_do_pedido] = [transacao[:itens_do_pedido]]
       end
-      transacao[:itens_do_pedido].each do |item|
-        item[:valor_unitario_produto] = Helper.to_superpay_number(item[:valor_unitario_produto]) unless item[:valor_unitario_produto].blank?
+
+      if transacao[:itens_do_pedido].is_a?(List)
+        transacao[:itens_do_pedido].each do |item|
+          item[:valor_unitario_produto] = Helper.to_superpay_number(item[:valor_unitario_produto]) unless item[:valor_unitario_produto].blank?
+        end
       end
 
       # dados do usuário
