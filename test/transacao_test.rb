@@ -87,7 +87,7 @@ describe Superpay::Transacao do
       codigo_seguranca: '123',
       data_validade_cartao: '12/2016',
       url_campainha: 'teste',
-      ip: '187.39.185.39',
+      "IP" => '187.39.185.39',
       idioma: 1,
       origem_transacao: 1,
       campo_livre1: '',
@@ -95,12 +95,50 @@ describe Superpay::Transacao do
       campo_livre3: '',
       campo_livre4: '',
       campo_livre5: '',
-      campo_livre6: '',
       dados_usuario_transacao: @usuario_transacao,
       itens_do_pedido: @itens_do_pedido
     }
 
+    @recorrencia = {
+      numero_recorrencia:      Time.now.to_i,
+      valor:                   19.90,
+      forma_pagamento:         121,
+      quantidade_cobrancas:    0,
+      dia_cobranca:            Time.now.strftime("%d"),
+      periodicidade:           3,
+      primeira_cobranca:       1,
+      processar_imediatamente: 1,
+      url_notificacao:         "http://google.com/superpay",
+
+      dados_cartao: {
+        nome_portador: "user test",
+        numero_cartao: "5390124620377429",
+        codigo_seguranca: "123",
+        data_validade: "12/2016"
+      },
+
+      dados_cobranca: {
+        nome_comprador: "casal 20",
+        email_comprador: "teste@teste.com.br",
+        telefone: [{
+          ddi: "55", ddd: "51", telefone: "12341234", tipo_telefone: 1
+        }]
+      }
+    }
+
   end
+
+  it "deveria gerenciar uma recorrencia com sucesso" do
+    retorno = Superpay::Transacao.cadastrar_recorrencia(@recorrencia)
+    retorno[:status].must_equal true
+
+    retorno = Superpay::Transacao.consultar_recorrencia(@recorrencia[:numero_recorrencia])
+    retorno[:valor].must_equal 19.90
+
+    retorno = Superpay::Transacao.cancelar_recorrencia(@recorrencia[:numero_recorrencia])
+    retorno[:status].must_equal false
+  end
+
 
   it "deveria pagar com sucesso" do
     transacao = Superpay::Transacao.pagar(@venda)
@@ -154,7 +192,7 @@ describe Superpay::Transacao do
       codigo_seguranca: '123',
       data_validade_cartao: '12/2016',
       url_campainha: 'teste',
-      ip: '187.39.185.39',
+      "IP" => '187.39.185.39',
       idioma: 1,
       origem_transacao: 1,
       campo_livre1: '',
@@ -162,7 +200,6 @@ describe Superpay::Transacao do
       campo_livre3: '',
       campo_livre4: '',
       campo_livre5: '',
-      campo_livre6: '',
       dados_usuario_transacao: {
         codigo_cliente: 1,
         tipo_cliente: 1,

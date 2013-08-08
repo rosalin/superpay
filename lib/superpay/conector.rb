@@ -1,8 +1,8 @@
 module Superpay
   class Conector
 
-    URL_PRODUCAO     = "https://superpay2.superpay.com.br/checkout"
-    URL_TESTE        = "http://homologacao2.superpay.com.br/checkout"
+    URL_PRODUCAO     = "https://superpay2.superpay.com.br/superpay"
+    URL_TESTE        = "http://homologacao2.superpay.com.br/superpay"
 
     TRANSACAO_PATH   = "/servicosPagamentoCompletoWS.Services?wsdl"
     RECORRENCIA_PATH = "/servicosRecorrenciaWS.Services?wsdl"
@@ -14,13 +14,16 @@ module Superpay
     end
 
     def reload
+      log_level  = ::Superpay.config.log_level
+      log_level  = (::Superpay.config.producao? ? :info : :debug) if log_level.nil?
+
       parametros = {
         convert_request_keys_to: :lower_camelcase,
-        log_level: ::Superpay.config.producao? ? :info : :debug,
-        pretty_print_xml: ::Superpay.config.producao? ? false : true
+        log_level:               log_level,
+        pretty_print_xml:        log_level == :debug ? true : false
       }
 
-      @savon_client             = Savon.client(parametros.merge({wsdl: url(TRANSACAO_PATH), }))
+      @savon_client             = Savon.client(parametros.merge({wsdl: url(TRANSACAO_PATH)}))
       @savon_client_recorrencia = Savon.client(parametros.merge({wsdl: url(RECORRENCIA_PATH)}))
     end
 
@@ -32,14 +35,28 @@ module Superpay
       "#{::Superpay.config.producao? ? URL_PRODUCAO : URL_TESTE}#{servico}"
     end
 
-    def call(metodo, transacao, servico=:transacao)
+    def call(metodo, dados, servico=:transacao)
+      (servico == :transacao) ? call_transacao(metodo, dados) : call_recorrencia(metodo, dados)
+    end
+
+    def call_transacao(metodo, dados)
       parametros = {
         usuario: Configuracao.instance.usuario,
         senha: Configuracao.instance.senha
       }
 
-      client = (servico == :transacao) ? @savon_client : @savon_client_recorrencia
-      client.call(metodo.to_sym, message: parametros.merge(transacao))
+      @savon_client.call(metodo.to_sym, message: parametros.merge(dados))
+    end
+
+    def call_recorrencia(metodo, dados)
+      parametros = {
+        usuario: {
+          usuario: Configuracao.instance.usuario,
+          senha: Configuracao.instance.senha
+        }
+      }
+
+      @savon_client_recorrencia.call(metodo.to_sym, message: parametros.merge(dados))
     end
 
   end

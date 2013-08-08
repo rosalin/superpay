@@ -3,7 +3,7 @@ module Superpay
 
   class Configuracao
 
-    attr_accessor :ambiente, :estabelecimento, :usuario, :senha
+    attr_accessor :ambiente, :estabelecimento, :usuario, :senha, :logger, :log_level
 
     def self.instance
       @__instance__ ||= new

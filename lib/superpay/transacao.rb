@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 
+require 'date'
+
 module Superpay
   class Transacao
 
@@ -95,25 +97,60 @@ module Superpay
     end
 
     def self.cadastrar_recorrencia(dados)
-      raise 'Not implemented yet'
+      raise 'Campo obrigatório: numero_recorrencia'           if dados[:numero_recorrencia].blank?
+      raise 'Campo obrigatório: valor'                        if dados[:valor].blank?
+      raise 'Campo obrigatório: forma_pagamento'              if dados[:forma_pagamento].blank?
+      raise 'Campo obrigatório: periodicidade'                if dados[:periodicidade].blank?
+      raise 'Campo obrigatório: dados_cartao'                 if dados[:dados_cartao].blank?
+      raise 'Campo obrigatório: nome_portador'                if dados[:dados_cartao][:nome_portador].blank?
+      raise 'Campo obrigatório: numero_cartao'                if dados[:dados_cartao][:numero_cartao].blank?
+      raise 'Campo obrigatório: codigo_seguranca'             if dados[:dados_cartao][:codigo_seguranca].blank?
+      raise 'Campo obrigatório: data_validade'                if dados[:dados_cartao][:data_validade].blank?
+
+      dados[:quantidade_cobrancas]    ||= 0
+      dados[:dia_cobranca]            ||= Time.now.strftime("%d")
+      dados[:primeira_cobranca]       ||= 1
+      dados[:processar_imediatamente] ||= 1
+
+      dados[:estabelecimento]          = ::Superpay.config.estabelecimento
+
+      dados    = Transacao.tratar_envio(dados)
+      retorno  = Superpay.conector.call(:cadastrar_recorrencia_ws, {recorrencia_w_s: dados}, :recorrencia)
+
+      retorno.to_array(:cadastrar_recorrencia_ws_response, :return).first
     end
 
-    def self.consultar_recorrencia(dados)
-      raise 'Not implemented yet'
+    def self.consultar_recorrencia(numero_recorrencia)
+      dados = {
+        numero_recorrencia: numero_recorrencia,
+        estabelecimento: ::Superpay.config.estabelecimento
+      }
+
+      retorno  = Superpay.conector.call(:consulta_transacao_recorrencia_ws, {recorrencia_consulta_w_s: dados}, :recorrencia)
+      resposta = retorno.to_array(:consulta_transacao_recorrencia_ws_response, :return).first
+      Transacao.tratar_retorno(resposta)
     end
 
-    def self.cancelar_recorrencia(dados)
-      raise 'Not implemented yet'
+
+    def self.cancelar_recorrencia(numero_recorrencia)
+      dados = {
+        numero_recorrencia: numero_recorrencia,
+        estabelecimento: ::Superpay.config.estabelecimento
+      }
+
+      retorno = Superpay.conector.call(:cancelar_recorrencia_ws, {recorrencia_cancelar_w_s: dados}, :recorrencia)
+      retorno.to_array(:cancelar_recorrencia_ws_response, :return).first
     end
+
 
     #
     # Trata o retorno das transações: converte valores e datas para objetos.
     def self.tratar_retorno(transacao)
-      transacao[:status] = STATUS[transacao[:status_transacao].to_i] unless transacao[:status_transacao].blank?
-      transacao[:valor] = Helper.superpay_number_to_decimal(transacao[:valor]) unless transacao[:valor].blank?
-      transacao[:valor_desconto] = Helper.superpay_number_to_decimal(transacao[:valor_desconto]) unless transacao[:valor_desconto].blank?
-      transacao[:taxa_embarque] = Helper.superpay_number_to_decimal(transacao[:taxa_embarque]) unless transacao[:taxa_embarque].blank?
-      transacao[:data_aprovacao_operadora] = transacao[:data_aprovacao_operadora].to_date unless transacao[:data_aprovacao_operadora].blank?
+      transacao[:status]                   = STATUS[transacao[:status_transacao].to_i] unless transacao[:status_transacao].blank?
+      transacao[:valor]                    = Helper.superpay_number_to_decimal(transacao[:valor]) unless transacao[:valor].blank?
+      transacao[:valor_desconto]           = Helper.superpay_number_to_decimal(transacao[:valor_desconto])   unless transacao[:valor_desconto].blank?
+      transacao[:taxa_embarque]            = Helper.superpay_number_to_decimal(transacao[:taxa_embarque])    unless transacao[:taxa_embarque].blank?
+      transacao[:data_aprovacao_operadora] = Date.strptime(transacao[:data_aprovacao_operadora], "%d/%M/%Y") unless transacao[:data_aprovacao_operadora].blank?
       return transacao
     end
 
