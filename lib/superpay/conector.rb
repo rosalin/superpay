@@ -2,7 +2,7 @@ module Superpay
   class Conector
 
     URL_PRODUCAO     = "https://superpay2.superpay.com.br/superpay"
-    URL_TESTE        = "http://homologacao2.superpay.com.br/superpay"
+    URL_TESTE        = "http://homologacao2.superpay.com.br/checkout"
 
     TRANSACAO_PATH   = "/servicosPagamentoCompletoWS.Services?wsdl"
     RECORRENCIA_PATH = "/servicosRecorrenciaWS.Services?wsdl"
