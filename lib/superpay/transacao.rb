@@ -138,9 +138,11 @@ module Superpay
       end
 
       # dados do usuário
-      transacao[:dados_usuario_transacao][:cep_endereco_comprador]    = Helper.cep_to_superpay(transacao[:dados_usuario_transacao][:cep_endereco_comprador]) unless transacao[:dados_usuario_transacao][:cep_endereco_comprador].blank?
-      transacao[:dados_usuario_transacao][:cep_endereco_entrega]      = Helper.cep_to_superpay(transacao[:dados_usuario_transacao][:cep_endereco_entrega]) unless transacao[:dados_usuario_transacao][:cep_endereco_entrega].blank?
-      transacao[:dados_usuario_transacao][:data_nascimento_comprador] = transacao[:dados_usuario_transacao][:data_nascimento_comprador].strftime('%d/%m/%Y') unless transacao[:dados_usuario_transacao][:data_nascimento_comprador].blank?
+      if transacao[:dados_usuario_transacao].is_a?(Hash)
+        transacao[:dados_usuario_transacao][:cep_endereco_comprador]    = Helper.cep_to_superpay(transacao[:dados_usuario_transacao][:cep_endereco_comprador]) unless transacao[:dados_usuario_transacao][:cep_endereco_comprador].blank?
+        transacao[:dados_usuario_transacao][:cep_endereco_entrega]      = Helper.cep_to_superpay(transacao[:dados_usuario_transacao][:cep_endereco_entrega]) unless transacao[:dados_usuario_transacao][:cep_endereco_entrega].blank?
+        transacao[:dados_usuario_transacao][:data_nascimento_comprador] = transacao[:dados_usuario_transacao][:data_nascimento_comprador].strftime('%d/%m/%Y') unless transacao[:dados_usuario_transacao][:data_nascimento_comprador].blank?
+      end
 
       return transacao
     end
